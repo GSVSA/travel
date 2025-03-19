@@ -403,7 +403,7 @@ paths:
           in: query
           required: true
           schema:
-            type: string
+            type: integer
         - name: format
           description: json или xml
           in: query

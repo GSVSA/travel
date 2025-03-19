@@ -1,13 +1,14 @@
+import Foundation
 import OpenAPIRuntime
 import OpenAPIURLSession
 
-typealias NearestStations = Components.Schemas.Stations
+typealias City = Components.Schemas.City
 
-protocol NearestStationsServiceProtocol {
-  func getNearestStations(lat: Double, lng: Double, distance: Int) async throws -> NearestStations
+protocol CityServiceProtocol {
+    func getCity(lat: Double, lng: Double, distance: Int) async throws -> City
 }
 
-final class NearestStationsService: NearestStationsServiceProtocol {
+final class CityService: CityServiceProtocol {
     private let client: Client
     private let apikey: String
 
@@ -15,13 +16,13 @@ final class NearestStationsService: NearestStationsServiceProtocol {
         self.client = client
         self.apikey = apikey
     }
-
-    func getNearestStations(
+    
+    func getCity(
         lat: Double,
         lng: Double,
         distance: Int
-    ) async throws -> NearestStations {
-        let response = try await client.getNearestStations(query: .init(
+    ) async throws -> City {
+        let response = try await client.getCity(query: .init(
             apikey: apikey,
             lat: lat,
             lng: lng,
