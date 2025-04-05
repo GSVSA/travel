@@ -19,17 +19,13 @@ struct ResponseOtherError: Error {
 
 final class StationsListService: StationsListServiceProtocol {
     private let client: Client
-    private let apikey: String
 
-    init(client: Client, apikey: String) {
+    init(client: Client) {
         self.client = client
-        self.apikey = apikey
     }
 
     func getStationsList() async throws -> StationsList {
-        let response = try await client.getStationsList(query: .init(
-            apikey: apikey
-        ))
+        let response = try await client.getStationsList()
         let httpBody = try response.ok.body.html
         let stationList = try await JSONDecoder().decode(from: httpBody, to: StationsList.self)
         return stationList

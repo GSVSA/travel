@@ -12,13 +12,9 @@ paths:
       - getNearestStations
       summary: Список ближайших станций
       operationId: getNearestStations
+      security:
+        - apiKey: []
       parameters:
-      - name: apikey
-        in: query
-        description: API key
-        required: true
-        schema:
-          type: string
       - name: lat
         in: query
         description: широта
@@ -63,13 +59,9 @@ paths:
       - getSearch
       summary: Расписание рейсов между станциями
       operationId: getSearch
+      security:
+        - apiKey: []
       parameters:
-      - name: apikey
-        in: query
-        description: API key
-        required: true
-        schema:
-          type: string
       - name: from
         in: query
         description: Код станции отправления
@@ -175,13 +167,9 @@ paths:
       operationId: getSchedule
       summary: Получение расписания по станции
       description: Позволяет получить список рейсов, отправляющихся от указанной станции и информацию по каждому рейсу.
+      security:
+        - apiKey: []
       parameters:
-        - name: apikey
-          description: API key
-          in: query
-          required: true
-          schema:
-            type: string
         - name: station
           description: Код станции
           in: query
@@ -262,13 +250,9 @@ paths:
       summary: Получение информации о нитке маршрута
       description: Запрашивает информацию о нитке маршрута, используя идентификатор нитки (UID).
         Дополнительно могут быть указаны параметры, такие как станция отправления, станция назначения, формат данных, язык и дата.
+      security:
+        - apiKey: []
       parameters:
-        - name: apikey
-          description: API key
-          in: query
-          required: true
-          schema:
-            type: string
         - name: uid
           description: Идентификатор нитки маршрута
           in: query
@@ -331,13 +315,9 @@ paths:
       operationId: getCity
       summary: Информация о ближайшем городе.
       description: Запрос позволяет получить информацию о ближайшем к указанной точке городе.
+      security:
+        - apiKey: []
       parameters:
-        - name: apikey
-          description: API key
-          in: query
-          required: true
-          schema:
-            type: string
         - name: lat
           description: Широта
           in: query
@@ -391,13 +371,9 @@ paths:
       operationId: getCarriers
       summary: Получение информации о перевозчике
       description: Запрашивает информацию о перевозчике по заданному коду перевозчика.
+      security:
+        - apiKey: []
       parameters:
-        - name: apikey
-          description: API key
-          in: query
-          required: true
-          schema:
-            type: string
         - name: code
           description: Код перевозчика
           in: query
@@ -444,13 +420,9 @@ paths:
       operationId: getStationsList
       summary: Получение списка станций
       description: Ресурс содержит полный список станций, информацию о которых предоставляют Яндекс Расписания. Список структурирован географически; ответ содержит список стран со вложенными списками регионов и населенных пунктов, в которых находятся станции.
+      security:
+        - apiKey: []
       parameters:
-        - name: apikey
-          description: API key
-          in: query
-          required: true
-          schema:
-            type: string
         - name: format
           description: json или xml
           in: query
@@ -479,13 +451,9 @@ paths:
       operationId: getCopyright
       summary: Получение информации об авторских правах
       description: Запрос позволяет получить данные о Яндекс Расписаниях - URL сервиса, баннер в различных цветовых представлениях и уведомительный текст
+      security:
+        - apiKey: []
       parameters:
-        - name: apikey
-          description: API key
-          in: query
-          required: true
-          schema:
-            type: string
         - name: format
           description: json или xml
           in: query
@@ -501,6 +469,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Copyright'
 components:
+  securitySchemes:
+    apiKey:
+      name: Authorization
+      in: header
+      type: apiKey
+      description: Ключ доступа к API
   schemas:
     Stations:
       type: object

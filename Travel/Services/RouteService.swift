@@ -17,11 +17,9 @@ protocol RouteServiceProtocol {
 
 final class RouteService: RouteServiceProtocol {
     private let client: Client
-    private let apikey: String
 
-    init(client: Client, apikey: String) {
+    init(client: Client) {
         self.client = client
-        self.apikey = apikey
     }
     
     func getRoute(
@@ -32,7 +30,6 @@ final class RouteService: RouteServiceProtocol {
         date: String? = nil
     ) async throws -> Route {
         let response = try await client.getRoute(query: .init(
-            apikey: apikey,
             uid: uid,
             from: origin,
             to: destination,

@@ -9,16 +9,13 @@ protocol SearchRoutesServiceProtocol {
 
 final class SearchRoutesService: SearchRoutesServiceProtocol {
     private let client: Client
-    private let apikey: String
 
-    init(client: Client, apikey: String) {
+    init(client: Client) {
         self.client = client
-        self.apikey = apikey
     }
 
     func searchRoutes(from origin: String, to destination: String) async throws -> SearchResponse {
         let response = try await client.getSearch(query: .init(
-            apikey: apikey,
             from: origin,
             to: destination
         ))
