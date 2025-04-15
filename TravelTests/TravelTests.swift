@@ -44,7 +44,7 @@ final class TravelTests: XCTestCase {
 
     func testRouteService() async throws {
         let service = RouteService(client: try getClient())
-        let route = try await service.getRoute(uid: "7217x7218_0_9600212_g25_4", stationCode: .all)
+        let route = try await service.getRoute(uid: "7217x7218_0_9600212_g25_4")
         XCTAssertNotNil(route.except_days)
     }
 
