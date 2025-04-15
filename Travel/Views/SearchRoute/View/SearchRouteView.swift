@@ -73,7 +73,7 @@ struct SearchRouteView: View {
                 .background(Color.accent)
                 .foregroundStyle(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                .opacity(viewModel.fromStation.description.isEmpty || viewModel.toStation.description.isEmpty ? 0 : 1)
+                .opacity(viewModel.fromStation.station == nil || viewModel.toStation.station == nil ? 0 : 1)
 
                 Spacer()
             }

@@ -43,17 +43,17 @@ struct WebViewBridge: UIViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            self.parent.isLoading = true
+            parent.isLoading = true
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            self.parent.isLoading = false
+            parent.isLoading = false
         }
 
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            self.parent.isLoading = false
-            self.parent.progress = 0.0
-            self.parent.isLoadingError = true
+            parent.isLoading = false
+            parent.progress = 0.0
+            parent.isLoadingError = true
         }
     }
 }

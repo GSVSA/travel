@@ -17,7 +17,7 @@ struct SettingsView: View {
                             "Dark mode",
                             isOn: $viewModel.isDarkModeEnabled
                         )
-                        .font(.system(size: 17, weight: .bold))
+                        .font(.system(size: 17))
                         .tint(Color.accent)
                         .padding(.bottom)
                         .onChange(of: viewModel.isDarkModeEnabled) { isEnabled in
@@ -25,7 +25,7 @@ struct SettingsView: View {
                         }
 
                         Text("User agreement")
-                            .font(.system(size: 17, weight: .bold))
+                            .font(.system(size: 17))
                             .badge(
                                 Text("\(Image(systemName: "chevron.right"))")
                             )

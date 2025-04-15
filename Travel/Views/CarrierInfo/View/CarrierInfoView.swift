@@ -18,6 +18,7 @@ struct CarrierInfoView: View {
                 }
                 .frame(idealHeight: 104)
                 .scaledToFit()
+                .clipShape(RoundedRectangle(cornerRadius: 16))
 
                 HStack {
                     Text(carrier.title)
