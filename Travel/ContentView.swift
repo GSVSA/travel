@@ -14,16 +14,18 @@ struct ContentView: View {
                 SearchRouteView()
                     .tabItem {
                         Image(systemName: "arrow.up.message")
+                            .renderingMode(.template)
                     }
                     .tag(TabTags.mainPage)
 
                 SettingsView()
                     .tabItem {
                         Image(systemName: "gearshape.fill")
+                            .renderingMode(.template)
                     }
                     .tag(TabTags.settingsPage)
             }
-            .accentColor(.text)
+            .tint(.text)
         }
     }
 }
@@ -31,5 +33,6 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .modifier(.colorScheme)
+        .environmentObject(StoriesManager())
         .environmentObject(AppSettings())
 }

@@ -10,6 +10,20 @@ final class SearchRouteViewModel: ObservableObject {
     
     @Published var isFindRoutesPresented: Bool = false
     
+    @Published var storyToShowIndex: Int = 0
+    @Published var showStory: Bool = false
+    
+    @Published var stories: [StoryModel] = {
+        return Array(0...5).map { value in
+            return StoryModel(
+                id: value,
+                backgroundImage: "Story_\(value + 1)",
+                title: "🔥🔥🔥",
+                description: Array(repeating: "Story description", count: 20).joined(separator: " ")
+            )
+        }
+    }()
+    
     func changeStations() {
         let from = fromStation
         let to = toStation
@@ -28,5 +42,10 @@ final class SearchRouteViewModel: ObservableObject {
     
     func findRoutes() {
         isFindRoutesPresented = true
+    }
+    
+    func isStationsSelected() -> Bool {
+        guard let _ = fromStation.station, let _ = toStation.station else { return false }
+        return true
     }
 }
