@@ -8,7 +8,7 @@ private enum Constants {
 struct FiltersView: View {
     @Binding var isShowRoot: Bool
 
-    @State private var isChecked: Bool = false
+    @StateObject private var model: FiltersViewModel = FiltersViewModel()
 
     var body: some View {
         ZStack {
@@ -21,7 +21,7 @@ struct FiltersView: View {
 
                     List(DayTime.allCases) { param in
                         VStack {
-                            Toggle(isOn: $isChecked) {
+                            Toggle(isOn: $model.isChecked) {
                                 Text(param.description)
                                     .font(.system(size: 17))
                             }
@@ -42,7 +42,7 @@ struct FiltersView: View {
 
                     List(TransferOption.allCases) { param in
                         VStack {
-                            Toggle(isOn: $isChecked) {
+                            Toggle(isOn: $model.isChecked) {
                                 Text(param.description)
                                     .font(.system(size: 17))
                             }
@@ -59,7 +59,7 @@ struct FiltersView: View {
                 }
                 .safeAreaInset(edge: .bottom) {
                     ApplyButton(action: didFilterApply)
-                        .opacity(isChecked ? 1 : 0)
+                        .opacity(model.isChecked ? 1 : 0)
                 }
             }
         }
