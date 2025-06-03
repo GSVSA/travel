@@ -7,7 +7,7 @@ struct StoryBackgroundView: View {
         Image(image)
             .resizable()
             .scaledToFill()
-            .edgesIgnoringSafeArea(.all)
+            .ignoresSafeArea(.all)
     }
 }
 

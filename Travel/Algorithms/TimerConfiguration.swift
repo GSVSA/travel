@@ -16,14 +16,14 @@ struct TimerConfiguration {
     }
 
     func progress(for storyIndex: Int) -> CGFloat {
-        return min(CGFloat(storyIndex) / CGFloat(storiesCount), 1)
+        min(CGFloat(storyIndex) / CGFloat(storiesCount), 1)
     }
 
     func nextProgress(progress: CGFloat) -> CGFloat {
-        return min(progress + progressPerTick, 1)
+        min(progress + progressPerTick, 1)
     }
     
     func index(for progress: CGFloat) -> Int {
-        return min(Int(progress * CGFloat(storiesCount)), storiesCount - 1)
+        min(Int(progress * CGFloat(storiesCount)), storiesCount - 1)
     }
 }

@@ -57,7 +57,7 @@ struct RouteSelectionListView: View {
     
     private var filterButton: some View {
         Button(action: viewModel.openFiltersPage) {
-            HStack(alignment: .center) {
+            HStack {
                 Text("Specify time")
                 Circle()
                     .fill(Color.danger)

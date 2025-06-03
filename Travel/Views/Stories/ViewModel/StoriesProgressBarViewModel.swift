@@ -5,7 +5,7 @@ final class StoriesProgressBarViewModel: ObservableObject {
     @Published var timer: Timer.TimerPublisher
     
     private var timerConfiguration: TimerConfiguration
-    private var cancellable: Cancellable? = nil
+    private var cancellable: Cancellable?
     
     init(timerConfiguration configuration: TimerConfiguration) {
         timerConfiguration = configuration

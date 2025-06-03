@@ -16,12 +16,7 @@ struct StoryPreviewView: View {
         }
         .padding(.horizontal, 8)
         .padding(.bottom, 12)
-        .frame(
-            minWidth: 92,
-            maxWidth: 92,
-            minHeight: 140,
-            maxHeight: 140
-        )
+        .frame(width: 92, height: 140)
         .background(
             StoryBackgroundView(image: story.backgroundImage)
         )

@@ -94,8 +94,7 @@ struct SearchRouteView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .padding(.bottom)
             }
-            .padding(.top)
-            .padding(.leading)
+            .padding([.top, .leading])
             .frame(
                 idealWidth: 343,
                 maxHeight: 128
