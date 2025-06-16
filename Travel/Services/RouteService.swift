@@ -15,7 +15,7 @@ protocol RouteServiceProtocol {
     ) async throws -> Route
 }
 
-final class RouteService: RouteServiceProtocol {
+actor RouteService: RouteServiceProtocol {
     private let client: Client
 
     init(client: Client) {

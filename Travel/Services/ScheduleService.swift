@@ -7,7 +7,7 @@ protocol ScheduleServiceProtocol {
     func getSchedule(station: String) async throws -> ScheduleResponse
 }
 
-final class ScheduleService: ScheduleServiceProtocol {
+actor ScheduleService: ScheduleServiceProtocol {
     private let client: Client
 
     init(client: Client) {

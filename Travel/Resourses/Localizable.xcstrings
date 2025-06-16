@@ -80,6 +80,17 @@
         }
       }
     },
+    "airport" : {
+      "comment" : "Station type description",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "аэропорт"
+          }
+        }
+      }
+    },
     "Apply" : {
       "comment" : "Apply - button",
       "localizations" : {
@@ -93,6 +104,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Применить"
+          }
+        }
+      }
+    },
+    "bus station" : {
+      "comment" : "Station type description",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "автовокзал"
           }
         }
       }
@@ -358,6 +380,28 @@
         }
       }
     },
+    "river port" : {
+      "comment" : "Station type description",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "речной вокзал"
+          }
+        }
+      }
+    },
+    "sea port" : {
+      "comment" : "Station type description",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "морской вокзал"
+          }
+        }
+      }
+    },
     "Server error" : {
       "comment" : "Server error message",
       "extractionState" : "manual",
@@ -406,6 +450,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Уточнить время"
+          }
+        }
+      }
+    },
+    "station" : {
+      "comment" : "Station type description",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "станция"
           }
         }
       }
@@ -493,6 +548,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Куда"
+          }
+        }
+      }
+    },
+    "train station" : {
+      "comment" : "Station type description",
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "вокзал"
           }
         }
       }

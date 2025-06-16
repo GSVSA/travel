@@ -1,9 +1,8 @@
 import SwiftUI
 
 struct StationsListView: View {
-    @Binding var stationData: StationData
-    @Binding var city: String
-    @Binding var isShowRoot: Bool
+    @EnvironmentObject private var searchRouteViewModel: SearchRouteViewModel
+    @EnvironmentObject private var citySelectionViewModel: CitySelectionViewModel
     
     @StateObject private var viewModel = StationsListViewModel()
     
@@ -12,27 +11,37 @@ struct StationsListView: View {
             Color.background
                 .edgesIgnoringSafeArea(.all)
             
-            if viewModel.isLoadingError {
-                NetworkErrorView(errorType: .noInternetConnection)
+            if let error = viewModel.isError {
+                NetworkErrorView(errorType: error)
             } else {
                 stationList
+
+                if viewModel.isLoading {
+                    ProgressView()
+                }
                 
-                Text("Station not found")
-                    .empty(isVisible: viewModel.searchResult.isEmpty)
+                if !viewModel.isLoading {
+                    Text("Station not found")
+                        .empty(isVisible: viewModel.searchResult.isEmpty)
+                }
             }
 
+        }
+        .onAppear {
+            viewModel.setStations(stationsList: citySelectionViewModel.selectedCity.stations)
         }
         .navigationTitle("Station selection")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
-        .backButtonToolbarItem(isShowRoot: $isShowRoot)
+        .backButtonToolbarItem(isShowRoot: $searchRouteViewModel.isStationPresented)
+        .modifier(.iOS18PlusBugFix)
     }
     
     private var stationList: some View {
         List(viewModel.searchResult, id: \.self) { station in
             HStack {
-                Button(action: { selectStation(station, from: city) } ) {
-                    Text(station)
+                Button(action: { selectStation(station, from: citySelectionViewModel.selectedCity) } ) {
+                    Text("\(station.description?.description ?? "") \(station.name)".trimmingCharacters(in: .whitespaces))
                         .font(.system(size: 17))
                 }
                 Spacer()
@@ -50,18 +59,38 @@ struct StationsListView: View {
         )
     }
 
-    func selectStation(_ station: String, from: String) {
-        viewModel.selectStation(station: station, from: city, withStationData: &stationData)
-        isShowRoot = false
+    func selectStation(_ station: Station, from: CityData) {
+        viewModel
+            .selectStation(
+                station: station,
+                from: citySelectionViewModel.selectedCity,
+                withStationData: &searchRouteViewModel.selectedStation
+            )
+        searchRouteViewModel.isStationPresented = false
     }
 }
 
 #Preview {
+    let citySelectionViewModel = CitySelectionViewModel()
     NavigationStack {
-        StationsListView(
-            stationData: .constant(StationData(stationType: .from)),
-            city: .constant(""),
-            isShowRoot: .constant(true)
+        citySelectionViewModel.selectedCity = CityData(
+            id: "s9623131",
+            name: "Тула",
+            stations: [
+                Station(
+                    id: "s9600839",
+                    name: "Тула (Ряжский вокзал)",
+                    description: .train
+                ),
+                Station(
+                    id: "s9623131",
+                    name: "Тула (Московский вокзал)",
+                    description: .train
+                )
+            ]
         )
+        return StationsListView()
+            .environmentObject(SearchRouteViewModel())
+            .environmentObject(citySelectionViewModel)
     }
 }

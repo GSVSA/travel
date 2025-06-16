@@ -2,11 +2,9 @@ import SwiftUI
 import WebKit
 
 struct WebViewBridge: UIViewRepresentable {
+    @EnvironmentObject var model: UserAgreementViewModel
+    
     let url: String
-
-    @Binding var isLoading: Bool
-    @Binding var isLoadingError: Bool
-    @Binding var progress: Double
 
     private let webView = WKWebView()
     
@@ -38,22 +36,24 @@ struct WebViewBridge: UIViewRepresentable {
                  options: [],
                  changeHandler: { [weak self] webView, _ in
                      guard let self = self else { return }
-                     self.parent.progress = webView.estimatedProgress
+                     Task { @MainActor in
+                         self.parent.model.loadingProgress = webView.estimatedProgress
+                     }
                  })
         }
 
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            parent.isLoading = true
+            self.parent.model.isLoading = true
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            parent.isLoading = false
+            self.parent.model.isLoading = false
         }
 
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            parent.isLoading = false
-            parent.progress = 0.0
-            parent.isLoadingError = true
+            self.parent.model.isLoading = false
+            self.parent.model.loadingProgress = 0.0
+            self.parent.model.isLoadingError = true
         }
     }
 }

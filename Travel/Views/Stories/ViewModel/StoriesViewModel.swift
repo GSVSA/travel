@@ -2,12 +2,12 @@ import Foundation
 
 final class StoriesViewModel: ObservableObject {
     @Published var currentProgress: CGFloat = 0
-    @Published var timerConfiguration: TimerConfiguration
+    @Published var timerConfiguration: TimerConfiguration?
     
     private var indexKeeper: Int = 0
     
-    init(timerConfiguration configuration: TimerConfiguration) {
-        timerConfiguration = configuration
+    func setupTimerConfiguration(storiesCount: Int) {
+        timerConfiguration = TimerConfiguration(storiesCount: storiesCount)
     }
     
     func saveStoryIndex(currentValue: Int, newValue: Int) {
@@ -18,6 +18,7 @@ final class StoriesViewModel: ObservableObject {
     }
     
     func didChangeCurrentProgress(newProgress: CGFloat, currentStoryIndex: inout Int) {
+        guard let timerConfiguration else { return }
         let index = timerConfiguration.index(for: newProgress)
         guard index != currentStoryIndex else { return }
         currentStoryIndex = index
@@ -29,7 +30,7 @@ final class StoriesViewModel: ObservableObject {
     }
     
     private func didChangeCurrentIndex(oldIndex: Int, newIndex: Int) {
-        guard oldIndex != newIndex else { return }
+        guard let timerConfiguration, oldIndex != newIndex else { return }
         let progress = timerConfiguration.progress(for: newIndex)
         guard abs(progress - currentProgress) >= 0.01 else { return }
         currentProgress = progress

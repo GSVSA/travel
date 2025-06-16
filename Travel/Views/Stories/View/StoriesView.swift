@@ -2,28 +2,16 @@ import SwiftUI
 
 struct StoriesView: View {
     @EnvironmentObject private var storiesManager: StoriesManager
-
-    @Binding var stories: [StoryModel]
-    @Binding var showStory: Bool
-    @Binding var currentStoryIndex: Int
-
-    @StateObject private var model: StoriesViewModel
-
-    init(stories: Binding<[StoryModel]>, showStory: Binding<Bool>, currentStoryIndex: Binding<Int>) {
-        self._stories = stories
-        self._showStory = showStory
-        self._currentStoryIndex = currentStoryIndex
-
-        let timerConfiguration = TimerConfiguration(storiesCount: stories.count)
-        self._model = StateObject(wrappedValue: StoriesViewModel(timerConfiguration: timerConfiguration))
-    }
+    @EnvironmentObject private var searchRouteViewModel: SearchRouteViewModel
+    
+    @StateObject private var model = StoriesViewModel()
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            StoriesTabView(stories: stories, currentStoryIndex: $currentStoryIndex)
-                .onChange(of: currentStoryIndex) { newValue in
+            StoriesTabView()
+                .onChange(of: searchRouteViewModel.storyToShowIndex) { newValue in
                     withAnimation {
-                        model.saveStoryIndex(currentValue: currentStoryIndex, newValue: newValue)
+                        model.saveStoryIndex(currentValue: searchRouteViewModel.storyToShowIndex, newValue: newValue)
                     }
                 }
                 .onTapGesture { location in
@@ -32,10 +20,7 @@ struct StoriesView: View {
                 .gesture(
                     DragGesture(minimumDistance: 30)
                         .onEnded { value in
-                            if
-                                value.translation.height < 30
-                                || value.translation.height > 30
-                            {
+                            if value.translation.height != 30 {
                                 closeStory()
                             }
                         }
@@ -45,26 +30,26 @@ struct StoriesView: View {
                 .padding(.trailing, 12)
                 .padding(.top, 47)
 
-            StoriesProgressBarView(
-                storiesCount: stories.count,
-                timerConfiguration: model.timerConfiguration,
-                currentProgress: $model.currentProgress
-            )
-            .padding(.top, 7)
-            .onChange(of: model.currentProgress) { newValue in
-                withAnimation {
-                    model.didChangeCurrentProgress(newProgress: newValue, currentStoryIndex: &currentStoryIndex)
-                    
-                    didStoryShowed()
+            StoriesProgressBarView()
+                .environmentObject(model)
+                .environmentObject(searchRouteViewModel)
+                .padding(.top, 7)
+                .onChange(of: model.currentProgress) { newValue in
+                    withAnimation {
+                        model.didChangeCurrentProgress(newProgress: newValue, currentStoryIndex: &searchRouteViewModel.storyToShowIndex)
+                        
+                        didStoryShowed()
+                    }
                 }
-            }
         }
         .clipShape(RoundedRectangle(cornerRadius: 40))
         .padding(.top, 7)
         .padding(.bottom, 17)
         .onAppear {
+            model.setupTimerConfiguration(storiesCount: searchRouteViewModel.stories.count)
+
             withAnimation {
-                model.saveStoryIndex(currentValue: currentStoryIndex, newValue: currentStoryIndex)
+                model.saveStoryIndex(currentValue: searchRouteViewModel.storyToShowIndex, newValue: searchRouteViewModel.storyToShowIndex)
             }
         }
         .background(
@@ -77,25 +62,25 @@ struct StoriesView: View {
     private func openNextStory(position: CGFloat) {
         guard position > UIScreen.main.bounds.width / 2 else { return }
         
-        if currentStoryIndex == stories.count - 1 {
+        if searchRouteViewModel.storyToShowIndex == searchRouteViewModel.stories.count - 1 {
             closeStory()
             return
         }
         
         model.nextStory(
-            currentStoryIndex: currentStoryIndex,
-            storiesCount: stories.count
+            currentStoryIndex: searchRouteViewModel.storyToShowIndex,
+            storiesCount: searchRouteViewModel.stories.count
         )
     }
     
     private func closeStory() {
         withAnimation(.easeInOut(duration: 0.4)) {
-            showStory = false
+            searchRouteViewModel.showStory = false
         }
     }
     
     private func didStoryShowed() {
-        storiesManager.markAsShowed(story: stories[currentStoryIndex])
+        storiesManager.markAsShowed(story: searchRouteViewModel.stories[searchRouteViewModel.storyToShowIndex])
         
         if isLastStoryShowed() {
             closeStory()
@@ -103,17 +88,13 @@ struct StoriesView: View {
     }
     
     private func isLastStoryShowed() -> Bool {
-        currentStoryIndex == stories.count - 1
+        searchRouteViewModel.storyToShowIndex == searchRouteViewModel.stories.count - 1
         && model.currentProgress == 1.0
     }
 }
 
 #Preview {
-    let stories = SearchRouteViewModel().stories
-    StoriesView(
-        stories: .constant(stories),
-        showStory: .constant(false),
-        currentStoryIndex: .constant(0)
-    )
-    .environmentObject(StoriesManager())
+    StoriesView()
+        .environmentObject(SearchRouteViewModel())
+        .environmentObject(StoriesManager())
 }

@@ -15,12 +15,9 @@ struct SearchRouteView: View {
                 }
             } else {
                 VStack(spacing: 20) {
-                    StoriesListView(
-                        stories: viewModel.stories,
-                        showStory: $viewModel.showStory,
-                        selectedStory: $viewModel.storyToShowIndex
-                    )
-                    .padding(.leading)
+                    StoriesListView()
+                        .environmentObject(viewModel)
+                        .padding(.leading)
                     
                     ZStack {
                         selectStationViewBackgroundView
@@ -33,32 +30,23 @@ struct SearchRouteView: View {
                     }
 
                     Spacer()
+                    Divider()
                 }
             }
         }
         .overlay{
             if viewModel.showStory {
-                StoriesView(
-                    stories: $viewModel.stories,
-                    showStory: $viewModel.showStory,
-                    currentStoryIndex: $viewModel.storyToShowIndex
-                )
+                StoriesView()
+                    .environmentObject(viewModel)
             }
         }
-        .navigationDestination(isPresented: $viewModel.isFromStationPresented) {
-            CitySelectionView(
-                stationData: $viewModel.fromStation,
-                isShowRoot: $viewModel.isFromStationPresented
-            )
-        }
-        .navigationDestination(isPresented: $viewModel.isToStationPresented) {
-            CitySelectionView(
-                stationData: $viewModel.toStation,
-                isShowRoot: $viewModel.isToStationPresented
-            )
+        .navigationDestination(isPresented: $viewModel.isStationPresented) {
+            CitySelectionView()
+                .environmentObject(viewModel)
         }
         .navigationDestination(isPresented: $viewModel.isFindRoutesPresented) {
-            RouteSelectionListView(isShowRoot: $viewModel.isFindRoutesPresented)
+            RouteSelectionListView()
+                .environmentObject(viewModel)
         }
     }
     

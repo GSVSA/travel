@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class SettingsViewModel: ObservableObject {
     @Published var isDarkModeEnabled = false
     @Published var isUserAgreementPresented: Bool = false

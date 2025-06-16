@@ -8,7 +8,7 @@ struct StationField: View {
         Button(action: didSelect) {
             Text(stationData.description)
                 .foregroundStyle(
-                    (stationData.station?.isEmpty == false)
+                    (stationData.station != nil)
                     ? Color.black
                     : Color.gray
                 )

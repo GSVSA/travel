@@ -8,7 +8,7 @@ protocol CarrierServiceProtocol {
     func getCarriers(code: Int) async throws -> Carrier
 }
 
-final class CarrierService: CarrierServiceProtocol {
+actor CarrierService: CarrierServiceProtocol {
     private let client: Client
 
     init(client: Client) {
