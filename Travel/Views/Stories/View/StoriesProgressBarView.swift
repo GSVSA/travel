@@ -1,28 +1,21 @@
 import SwiftUI
-import Combine
+
 
 struct StoriesProgressBarView: View {
-    let storiesCount: Int
-    let timerConfiguration: TimerConfiguration
-    @Binding var currentProgress: CGFloat
-
-    @StateObject private var model: StoriesProgressBarViewModel
-
-    init(storiesCount: Int, timerConfiguration: TimerConfiguration, currentProgress: Binding<CGFloat>) {
-        self.storiesCount = storiesCount
-        self.timerConfiguration = timerConfiguration
-        self._currentProgress = currentProgress
-        self._model = StateObject(wrappedValue: StoriesProgressBarViewModel(timerConfiguration: timerConfiguration))
-    }
+    @EnvironmentObject private var storiesViewModel: StoriesViewModel
+    @EnvironmentObject private var searchRouteViewModel: SearchRouteViewModel
+    
+    @StateObject private var model: StoriesProgressBarViewModel = StoriesProgressBarViewModel()
 
     var body: some View {
         ProgressBar(
-            numberOfSections: storiesCount,
-            progress: currentProgress
+            numberOfSections: searchRouteViewModel.stories.count,
+            progress: storiesViewModel.currentProgress
         )
         .padding(.top, 20)
         .padding(.horizontal, 12)
         .onAppear {
+            model.setupTimer(timerConfiguration: storiesViewModel.timerConfiguration)
             model.startTimer()
         }
         .onDisappear {
@@ -35,21 +28,20 @@ struct StoriesProgressBarView: View {
     
     private func timerTick() {
         withAnimation {
-            currentProgress = timerConfiguration.nextProgress(progress: currentProgress)
+            guard let timerConfiguration = storiesViewModel.timerConfiguration else { return }
+            storiesViewModel.currentProgress = timerConfiguration.nextProgress(progress: storiesViewModel.currentProgress)
         }
     }
 }
 
 #Preview {
     let storiesCount = 3
-
+    
     ZStack {
         Color(.lightGray)
             .ignoresSafeArea()
-        StoriesProgressBarView(
-            storiesCount: storiesCount,
-            timerConfiguration: TimerConfiguration(storiesCount: storiesCount),
-            currentProgress: .constant(0.5)
-        )
+        StoriesProgressBarView()
+            .environmentObject(StoriesViewModel())
+            .environmentObject(SearchRouteViewModel())
     }
 }

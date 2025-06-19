@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct CitySelectionView: View {
-    @Binding var stationData: StationData
-    @Binding var isShowRoot: Bool
+    @EnvironmentObject private var searchRouteViewModel: SearchRouteViewModel
 
     @StateObject private var viewModel = CitySelectionViewModel()
 
@@ -11,33 +10,42 @@ struct CitySelectionView: View {
             Color.background
                 .edgesIgnoringSafeArea(.all)
             
-            if viewModel.isLoadingError {
-                NetworkErrorView(errorType: .noInternetConnection)
+            if let error = viewModel.isError {
+                NetworkErrorView(errorType: error)
             } else {
                 cityList
                 
-                Text("City not found")
-                    .empty(isVisible: viewModel.searchResult.isEmpty)
+                if viewModel.isLoading {
+                    ProgressView()
+                }
+                
+                if !viewModel.isLoading {
+                    Text("City not found")
+                        .empty(isVisible: viewModel.searchResult.isEmpty)
+                }
+                
             }
         }
+        .task {
+            await viewModel.fetchCities()
+        }
         .navigationDestination(isPresented: $viewModel.isCitySelected) {
-            StationsListView(
-                stationData: $stationData,
-                city: $viewModel.selectedCity,
-                isShowRoot: $isShowRoot
-            )
+            StationsListView()
+                .environmentObject(viewModel)
+                .environmentObject(searchRouteViewModel)
         }
         .navigationTitle("City selection")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
-        .backButtonToolbarItem(isShowRoot: $isShowRoot)
+        .backButtonToolbarItem(isShowRoot: $searchRouteViewModel.isStationPresented)
+        .modifier(.iOS18PlusBugFix)
     }
     
     private var cityList: some View {
         List(viewModel.searchResult, id: \.self) { city in
             HStack {
                 Button(action: { viewModel.selectCity(city) } ) {
-                    Text(city)
+                    Text(city.name)
                         .font(.system(size: 17))
                 }
                 Spacer()
@@ -58,9 +66,7 @@ struct CitySelectionView: View {
 
 #Preview {
     NavigationStack {
-        CitySelectionView(
-            stationData: .constant(StationData(stationType: .from)),
-            isShowRoot: .constant(true)
-        )
+        CitySelectionView()
+            .environmentObject(SearchRouteViewModel())
     }
 }

@@ -8,7 +8,7 @@ protocol CityServiceProtocol {
     func getCity(lat: Double, lng: Double, distance: Int) async throws -> City
 }
 
-final class CityService: CityServiceProtocol {
+actor CityService: CityServiceProtocol {
     private let client: Client
 
     init(client: Client) {

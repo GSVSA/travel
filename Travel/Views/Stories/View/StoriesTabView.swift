@@ -1,12 +1,11 @@
 import SwiftUI
 
 struct StoriesTabView: View {
-    let stories: [StoryModel]
-    @Binding var currentStoryIndex: Int
+    @EnvironmentObject private var searchRouteViewModel: SearchRouteViewModel
     
     var body: some View {
-        TabView(selection: $currentStoryIndex) {
-            ForEach(stories) { story in
+        TabView(selection: $searchRouteViewModel.storyToShowIndex) {
+            ForEach(searchRouteViewModel.stories) { story in
                 StoryView(story: story)
             }
         }
@@ -16,6 +15,6 @@ struct StoriesTabView: View {
 }
 
 #Preview {
-    let stories = SearchRouteViewModel().stories
-    StoriesTabView(stories: stories, currentStoryIndex: .constant(0))
+    StoriesTabView()
+        .environmentObject(SearchRouteViewModel())
 }

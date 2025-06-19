@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct UserAgreementView: View {
-    @Binding var isShowRoot: Bool
+    @EnvironmentObject var settingsViewModel: SettingsViewModel
 
     @StateObject private var model: UserAgreementViewModel = UserAgreementViewModel()
 
@@ -18,12 +18,8 @@ struct UserAgreementView: View {
                     if model.isLoadingError {
                         NetworkErrorView(errorType: .noInternetConnection)
                     } else {
-                        WebViewBridge(
-                            url: "https://yandex.ru/legal/practicum_offer/",
-                            isLoading: $model.isLoading,
-                            isLoadingError: $model.isLoadingError,
-                            progress: $model.loadingProgress
-                        )
+                        WebViewBridge(url: "https://yandex.ru/legal/practicum_offer/")
+                            .environmentObject(model)
                         
                         if model.isLoading {
                             ProgressView()
@@ -34,19 +30,16 @@ struct UserAgreementView: View {
             .navigationTitle("User agreement")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
-            .backButtonToolbarItem(isShowRoot: $isShowRoot)
+            .backButtonToolbarItem(isShowRoot: $settingsViewModel.isUserAgreementPresented)
             .ignoresSafeArea(edges: [.leading, .trailing, .bottom])
-            .onAppear {
-                model.isLoading = true
-                model.loadingProgress = 0.0
-                model.isLoadingError = false
-            }
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        UserAgreementView(isShowRoot: .constant(false))
+        UserAgreementView()
+            .environmentObject(SettingsViewModel())
+            .environmentObject(UserAgreementViewModel())
     }
 }

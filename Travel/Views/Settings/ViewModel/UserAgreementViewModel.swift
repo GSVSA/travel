@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class UserAgreementViewModel: ObservableObject {
     @Published var isLoadingError = false
     

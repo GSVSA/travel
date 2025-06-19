@@ -2,13 +2,21 @@ import Foundation
 
 struct RouteCardData: Identifiable, Hashable {
     let id = UUID()
+    let departureDate: Date
+    let arrivalDate: Date
+    let hasTransfers: Bool
+    let transferTitle: String?
     let carrier: CarrierModel
-
-    private let departureDate: Date
-    private let arrivalDate: Date
-    private let hasTransfers: Bool
-    private let transferTitle: String?
-    private var dateFormatter = DateFormatter()
+    
+    private var dateFormatter = DateFormatterService.shared
+    
+    static func == (lhs: RouteCardData, rhs: RouteCardData) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 
     var duration: Int {
         let delta = departureDate.distance(to: arrivalDate)
@@ -17,13 +25,11 @@ struct RouteCardData: Identifiable, Hashable {
     }
 
     var departureDay: String {
-        dateFormatter.dateFormat = "d MMMM"
-        return dateFormatter.string(from: departureDate)
+        dateFormatter.stringFromDate(departureDate, inFormat: "d MMMM")
     }
 
     var departureTime: String {
-        dateFormatter.dateFormat = "HH:mm"
-        return dateFormatter.string(from: departureDate)
+        dateFormatter.stringFromDate(departureDate, inFormat: "HH:mm")
     }
 
     var departureHour: Int {
@@ -31,8 +37,7 @@ struct RouteCardData: Identifiable, Hashable {
     }
 
     var arrivalTime: String {
-        dateFormatter.dateFormat = "HH:mm"
-        return dateFormatter.string(from: arrivalDate)
+        dateFormatter.stringFromDate(arrivalDate, inFormat: "HH:mm")
     }
 
     var formattedTransferTitle: String? {

@@ -5,7 +5,7 @@ private enum Constants {
 }
 
 struct RouteSelectionListView: View {
-    @Binding var isShowRoot: Bool
+    @EnvironmentObject var searchRouteViewModel: SearchRouteViewModel
     
     @StateObject private var viewModel = RouteSelectionListViewModel()
     
@@ -15,8 +15,8 @@ struct RouteSelectionListView: View {
                 Color.background
                     .edgesIgnoringSafeArea(.all)
                 
-                if viewModel.isLoadingError {
-                    NetworkErrorView(errorType: .noInternetConnection)
+                if let error = viewModel.isError {
+                    NetworkErrorView(errorType: error)
                 } else {
                     VStack {
                         pageTitle
@@ -26,31 +26,48 @@ struct RouteSelectionListView: View {
                             }
                     }
                     
-                    Text("There are no options")
-                        .empty(isVisible: mockRouterData.isEmpty)
+                    if viewModel.isLoading {
+                        ProgressView()
+                    }
+                    
+                    if !viewModel.isLoading {
+                        Text("There are no options")
+                            .empty(isVisible: viewModel.allRoutes.isEmpty)
+                    }
                 }
             }
             .navigationDestination(isPresented: $viewModel.isFiltersPagePresented) {
-                FiltersView(isShowRoot: $viewModel.isFiltersPagePresented)
+                FiltersView()
+                    .environmentObject(viewModel)
             }
         }
+        .task {
+            await viewModel.fetchRoutesAlong(way: searchRouteViewModel.getRouteCardData())
+        }
+        .navigationDestination(isPresented: $viewModel.isCarrierPagePresented) {
+            CarrierInfoView()
+                .environmentObject(viewModel)
+        }
         .navigationBarBackButtonHidden()
-        .backButtonToolbarItem(isShowRoot: $isShowRoot)
+        .backButtonToolbarItem(isShowRoot: $searchRouteViewModel.isFindRoutesPresented)
     }
     
     private var pageTitle: some View {
-        Text(mockPageTitle)
+        Text(verbatim: viewModel.getPageTitleFor(routes: searchRouteViewModel.getRouteCardData()))
             .font(.system(size: 24, weight: .bold))
             .padding(.horizontal)
             .padding(.top)
     }
     
     private var routeList: some View {
-        List(mockRouterData, id: \.self) { routeCard in
+        List(viewModel.allRoutes) { routeCard in
             RouteSelectionView(routeCardData: routeCard)
                 .listRowSeparator(.hidden)
                 .listRowBackground(Color.clear)
                 .listRowInsets(.init(.zero))
+                .onTapGesture {
+                    viewModel.presentCarrier(with: routeCard.carrier)
+                }
         }
         .listStyle(.plain)
     }
@@ -66,7 +83,7 @@ struct RouteSelectionListView: View {
                         idealWidth: Constants.filterButtonCircleSize,
                         maxHeight: Constants.filterButtonCircleSize
                     )
-                    .opacity(mockRouterData.isEmpty ? 1 : 0)
+                    .opacity(viewModel.filters.isSelected ? 1 : 0)
             }
             .frame(
                 maxWidth: .infinity,
@@ -82,7 +99,26 @@ struct RouteSelectionListView: View {
 }
 
 #Preview {
-    NavigationStack {
-        RouteSelectionListView(isShowRoot: .constant(false))
-    }
+    let searchRouteViewModel = SearchRouteViewModel()
+    searchRouteViewModel.fromStation = StationData(
+        stationType: .from,
+        city: "Москва",
+        station: Station(
+            id: "s2000005",
+            name: "Москва (Павелецкий вокзал)",
+            description: .train
+        )
+    )
+    searchRouteViewModel.toStation = StationData(
+        stationType: .to,
+        city: "Тула",
+        station: Station(
+            id: "s9623131",
+            name: "Тула (Московский вокзал)",
+            description: .train
+        )
+    )
+    return RouteSelectionListView()
+        .environmentObject(RouteSelectionListViewModel())
+        .environmentObject(searchRouteViewModel)
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-enum DayTime: FilterOptionProtocol {
+enum DayTime: String, FilterOptionProtocol {
     static let title: LocalizedStringResource = "Departure time"
     
     var id: String { UUID().uuidString }

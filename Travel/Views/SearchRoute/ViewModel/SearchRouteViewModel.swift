@@ -1,13 +1,25 @@
 import Foundation
 
+@MainActor
 final class SearchRouteViewModel: ObservableObject {
     @Published var isLoadingError: Bool = false
     
     @Published var fromStation: StationData = StationData(stationType: .from)
     @Published var toStation: StationData = StationData(stationType: .to)
-    @Published var isFromStationPresented: Bool = false
-    @Published var isToStationPresented: Bool = false
     
+    @Published var selectedStation: StationData? = nil {
+        didSet {
+            guard let selectedStation, let _ = selectedStation.station?.name else { return }
+            if
+                selectedStation.stationType == .from {
+                fromStation = selectedStation
+            } else {
+                toStation = selectedStation
+            }
+        }
+    }
+    
+    @Published var isStationPresented: Bool = false
     @Published var isFindRoutesPresented: Bool = false
     
     @Published var storyToShowIndex: Int = 0
@@ -33,19 +45,29 @@ final class SearchRouteViewModel: ObservableObject {
     }
     
     func selectFromStation() {
-        isFromStationPresented = true
+        isStationPresented = true
+        selectedStation = fromStation
     }
     
     func selectToStation() {
-        isToStationPresented = true
+        isStationPresented = true
+        selectedStation = toStation
     }
     
     func findRoutes() {
+        guard isStationsSelected() else { return }
         isFindRoutesPresented = true
     }
     
     func isStationsSelected() -> Bool {
         guard let _ = fromStation.station, let _ = toStation.station else { return false }
         return true
+    }
+    
+    func getRouteCardData() -> RouteData {
+        RouteData(
+            fromStation: fromStation,
+            toStation: toStation
+        )
     }
 }
