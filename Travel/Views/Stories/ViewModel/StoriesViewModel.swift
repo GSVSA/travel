@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class StoriesViewModel: ObservableObject {
     @Published var currentProgress: CGFloat = 0
     @Published var timerConfiguration: TimerConfiguration?

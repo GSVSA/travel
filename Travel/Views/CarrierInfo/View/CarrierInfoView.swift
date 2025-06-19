@@ -6,7 +6,7 @@ struct CarrierInfoView: View {
     var body: some View {
         ZStack {
             Color.background
-                .edgesIgnoringSafeArea(.all)
+                .ignoresSafeArea(.all)
             
             VStack(alignment: .center, spacing: 16) {
                 AsyncImage(

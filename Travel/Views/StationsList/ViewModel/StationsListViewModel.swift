@@ -1,10 +1,5 @@
 import Foundation
 
-//private let mockStations = [
-//    "Киевский вокзал",
-//    "Московский вокзал",
-//]
-
 @MainActor
 final class StationsListViewModel: ObservableObject {
     @Published var isLoading: Bool = true

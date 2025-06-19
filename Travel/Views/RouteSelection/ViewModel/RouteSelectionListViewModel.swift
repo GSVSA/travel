@@ -3,14 +3,14 @@ import Foundation
 @MainActor
 final class RouteSelectionListViewModel: ObservableObject {
     @Published var isLoading: Bool = false
-    @Published var isError: NetworkErrorType? = nil
+    @Published var isError: NetworkErrorType?
     @Published var allRoutes: [RouteCardData] = []
     
     @Published var filters: Filters = Filters()
     @Published var isFiltersPagePresented: Bool = false
     
     @Published var isCarrierPagePresented = false
-    @Published var carrierForPresentation: CarrierModel? = nil
+    @Published var carrierForPresentation: CarrierModel?
     
     private let networkService = NetworkService()
     private let dateFormatter = DateFormatterService.shared
@@ -82,7 +82,7 @@ final class RouteSelectionListViewModel: ObservableObject {
                 isTimeSelected = true
                 break
             }
-            if isTimeSelected == false {
+            if !isTimeSelected {
                 return true
             }
 

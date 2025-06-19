@@ -12,7 +12,7 @@ struct RouteSelectionView: View {
         VStack(spacing: 8) {
             VStack(spacing: 4) {
                 Spacer()
-                HStack(alignment: .center) {
+                HStack {
                     carrierLogo
                     carrierAndTransferInfo
                     Spacer()

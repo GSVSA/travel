@@ -1,10 +1,9 @@
 import Foundation
 
-//private let mockCities: [CityData] = ["Москва", "Санкт-Петербург", "Волгоград", "Минеральные воды"]
-
+@MainActor
 final class CitySelectionViewModel: ObservableObject {
     @Published var isLoading: Bool = false
-    @Published var isError: NetworkErrorType? = nil
+    @Published var isError: NetworkErrorType?
     @Published var selectedCity: CityData = CityData(id: "", name: "", stations: [])
     @Published var searchText: String = ""
     @Published var isCitySelected: Bool = false
@@ -55,7 +54,7 @@ final class CitySelectionViewModel: ObservableObject {
         
         let cityList: [CityData] = getCityList(regionStationsList: regionStationsList)
         
-        await MainActor.run { [cityList] in
+        await MainActor.run {
             cities = cityList
             isLoading = false
             isError = nil
@@ -83,7 +82,7 @@ final class CitySelectionViewModel: ObservableObject {
                             return element.rawValue.lowercased() == station.station_type?.lowercased() ?? ""
                         })
                     {
-                        var description: StationDescription? = nil
+                        var description: StationDescription?
                         if let stationType = station.station_type {
                             description = StationDescription.init(rawValue: stationType)
                         }

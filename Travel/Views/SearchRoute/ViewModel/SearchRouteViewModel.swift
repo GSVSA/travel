@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class SearchRouteViewModel: ObservableObject {
     @Published var isLoadingError: Bool = false
     

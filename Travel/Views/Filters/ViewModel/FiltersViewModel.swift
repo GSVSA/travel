@@ -2,7 +2,7 @@ import Foundation
 
 @MainActor
 final class FiltersViewModel: ObservableObject {
-    @Published var withTransfers: TransferOption? = nil
+    @Published var withTransfers: TransferOption?
     @Published var filters: Filters?
     
     var isFilterSelected: Bool {
@@ -13,7 +13,7 @@ final class FiltersViewModel: ObservableObject {
         self.filters = filters
         
         if let withTransfers = filters.withTransfers {
-            self.withTransfers = withTransfers == true ? .yes : .no
+            self.withTransfers = withTransfers ? .yes : .no
         }
     }
 

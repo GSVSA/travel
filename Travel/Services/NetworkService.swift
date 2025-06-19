@@ -24,14 +24,6 @@ protocol NetworkServiceProtocol {
 }
 
 actor NetworkService: NetworkServiceProtocol {
-    private static func getClient() throws -> Client {
-        Client(
-            serverURL: try Servers.Server1.url(),
-            transport: URLSessionTransport(),
-            middlewares: [AuthenticationMiddleware(authorizationHeaderFieldValue: TravelServiceConstants.apiKey)]
-        )
-    }
-    
     func searchRoutes(
         from origin: String,
         to destination: String,
@@ -88,5 +80,13 @@ actor NetworkService: NetworkServiceProtocol {
     func getStationsList() async throws -> StationsList {
         let service = StationsListService(client: try NetworkService.getClient())
         return try await service.getStationsList()
+    }
+    
+    private static func getClient() throws -> Client {
+        Client(
+            serverURL: try Servers.Server1.url(),
+            transport: URLSessionTransport(),
+            middlewares: [AuthenticationMiddleware(authorizationHeaderFieldValue: TravelServiceConstants.apiKey)]
+        )
     }
 }

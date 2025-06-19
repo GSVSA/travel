@@ -10,12 +10,12 @@ enum StationDescription: String, Equatable, CaseIterable {
     
     var description: String {
         switch self {
-        case .train: return String(localized: "train station")
-        case .airport: return String(localized: "airport")
-        case .busStation: return String(localized: "bus station")
-        case .riverPort: return String(localized: "river port")
-        case .seaPort: return String(localized: "sea port")
-        case .station: return String(localized: "station")
+        case .train: String(localized: "train station")
+        case .airport: String(localized: "airport")
+        case .busStation: String(localized: "bus station")
+        case .riverPort: String(localized: "river port")
+        case .seaPort: String(localized: "sea port")
+        case .station: String(localized: "station")
         }
     }
 }
